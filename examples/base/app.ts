@@ -60,19 +60,42 @@ import axios from '../../src/index'
 //   }
 // })
 
-const arr = new Int32Array([21, 31])
+// const arr = new Int32Array([21, 31])
+
+// axios({
+//   method: 'post',
+//   url: '/base/buffer',
+//   data: arr
+// })
 
 axios({
+  url: '/base/post',
   method: 'post',
-  url: '/base/buffer',
-  data: arr
+  data: {
+    a: 1,
+    b: 2
+  }
+}).then(res => {
+  console.log(res)
 })
 
 axios({
   method: 'post',
   url: '/base/post',
+  responseType: 'json',
   data: {
-    a: 1,
-    b: 2
+    c: 1,
+    d: 2
   }
+}).then(res => {
+  console.log(res)
 })
+
+// const paramsString = 'q=URLUtils.searchParams&topic=api'
+// const searchParams = new URLSearchParams(paramsString)
+
+// axios({
+//   method: 'post',
+//   url: '/base/post',
+//   data: searchParams
+// })
