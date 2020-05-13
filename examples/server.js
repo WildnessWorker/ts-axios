@@ -4,9 +4,6 @@ const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
-const path = require('path')
-
-// require('./server2')
 
 const app = express()
 const compiler = webpack(WebpackConfig)
@@ -21,16 +18,10 @@ app.use(webpackDevMiddleware(compiler, {
 
 app.use(webpackHotMiddleware(compiler))
 
-app.use(express.static(__dirname, {
-  setHeaders (res) {
-    res.cookie('XSRF-TOKEN-D', '1234abc')
-  }
-}))
+app.use(express.static(__dirname))
 
 app.use(bodyParser.json())
-// app.use(bodyParser.text())
 app.use(bodyParser.urlencoded({ extended: true }))
-
 
 const router = express.Router()
 
@@ -51,7 +42,7 @@ router.post('/base/post', function(req, res) {
 router.post('/base/buffer', function(req, res) {
   let msg = []
   req.on('data', (chunk) => {
-    if(chunk) {
+    if (chunk) {
       msg.push(chunk)
     }
   })
@@ -61,12 +52,65 @@ router.post('/base/buffer', function(req, res) {
   })
 })
 
+router.get('/error/get', function(req, res) {
+  if (Math.random() > 0.5) {
+    res.json({
+      msg: 'hello world'
+    })
+  } else {
+    res.status(500)
+    res.end()
+  }
+})
+
+router.get('/error/timeout', function(req, res) {
+  res.json({
+    msg: 'timeout hello world'
+  })
+})
+router.options('/extend/options', function(req, res) {
+  res.json({
+    msg: 'options hello world'
+  })
+})
+
+router.head('/extend/head', function(req, res) {
+  return res.json({
+    msg: 'head hello world'
+  })
+})
+
+router.delete('/extend/delete', function(req, res) {
+  res.json({
+    msg: 'delete hello world'
+  })
+})
+
+router.post('/extend/post', function(req, res) {
+  res.json({
+    msg: 'post hello world'
+  })
+})
+
+router.patch('/extend/patch', function(req, res) {
+  res.json({
+    msg: 'patch hello world'
+  })
+})
+
+router.put('/extend/put', function(req, res) {
+  res.json({
+    msg: 'put hello world'
+  })
+})
+
+router.get('/interceptor/get', function(req, res) {
+  res.end('interceptors')
+})
+
 app.use(router)
 
 const port = process.env.PORT || 8080
 module.exports = app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}, Ctrl+C to stop`)
 })
-
-  
-

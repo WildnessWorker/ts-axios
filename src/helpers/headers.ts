@@ -1,10 +1,6 @@
 import { isPlainObject } from './util'
 
-/**
- * @description: 用来规范headers头部信息，检查用户传入的header是否规范，不规范则矫正
- * @param {any} headers 需要处理的headers头部信息
- * @param {string} normalizedName 一个正确规范的header属性名 
- */
+// 统一header头为首字母大写格式
 function normalizeHeaderName(headers: any, normalizedName: string): void {
   if (!headers) {
     return
@@ -17,7 +13,11 @@ function normalizeHeaderName(headers: any, normalizedName: string): void {
   })
 }
 
-// data参数的作用是判断发送到服务端的数据是不是一个对象json数据，是一个json数据时才做处理
+/**
+ * @description 自动添加或相关header头，
+ * @param headers header头对象
+ * @param data body数据
+ */
 export function processHeaders(headers: any, data: any): any {
   normalizeHeaderName(headers, 'Content-Type')
 
@@ -26,23 +26,26 @@ export function processHeaders(headers: any, data: any): any {
       headers['Content-Type'] = 'application/json;chartset=UTF-8'
     }
   }
-
   return headers
 }
 
-// 由于返回的headers是一串字符串，通过此方法处理成对象结构
+/**
+ * @description 将headers字符串处理为对象类型
+ * @param headers
+ */
 export function parseHeaders(headers: string): any {
   let parsed = Object.create(null)
-  if(!headers) {
+  if (!headers) {
     return parsed
   }
-  headers.split('\r\n').forEach((line) => {
+
+  headers.split('\r\n').forEach(line => {
     let [key, val] = line.split(':')
     key = key.trim().toLowerCase()
-    if(!key) {
+    if (!key) {
       return
     }
-    if(val) {
+    if (val) {
       val = val.trim()
     }
     parsed[key] = val
